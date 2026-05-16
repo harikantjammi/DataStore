@@ -7,27 +7,27 @@
 
 import Foundation
 
-struct HoraDTO: Codable {
-    let data: Data
+public struct HoraDTO: Codable, Sendable {
+    public let data: Data
     
-    struct Data: Codable {
-        let status: String
-        let data: Data
+    public struct Data: Codable, Sendable  {
+        public let status: String
+        public let data: Data
         
-        struct Data: Codable {
-            let hora_timing: [HoraTiming]
+        public struct Data: Codable, Sendable  {
+            public let hora_timing: [HoraTiming]
             
-            struct HoraTiming: Codable {
-                let hora: Hora
-                let type: String
-                let is_day: Bool
-                let start: Date
-                let end: Date
+            public  struct HoraTiming: Codable, Sendable  {
+                public let hora: Hora
+                public let type: String
+                public let is_day: Bool
+                public let start: Date
+                public let end: Date
                 
-                struct Hora: Codable {
-                    let id: Int
-                    let name: String
-                    let vedic_name: String
+                public struct Hora: Codable, Sendable  {
+                    public let id: Int
+                    public let name: String
+                    public let vedic_name: String
                 }
             }
         }
@@ -35,7 +35,7 @@ struct HoraDTO: Codable {
 
 }
 
-extension HoraDTO.Data.Data.HoraTiming {
+public extension HoraDTO.Data.Data.HoraTiming {
     
     var isDay: Bool {
         return is_day

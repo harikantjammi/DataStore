@@ -7,26 +7,26 @@
 
 import Foundation
 
-struct ChoghadiyaDTO: Codable {
-    let data: Data
+public struct ChoghadiyaDTO: Codable, Sendable {
+    public let data: Data
     
-    struct Data: Codable {
-        let status: String
-        let data: Data
+    public struct Data: Codable, Sendable {
+        public let status: String
+        public let data: Data
         
-        struct Data: Codable {
-            let muhurat: [Muhurat]
+        public struct Data: Codable, Sendable {
+            public let muhurat: [Muhurat]
             
-            struct Muhurat: Codable {
-                let id: Int
-                let name: String
-                let type: MuhuratType
-                let vela: String?
-                let is_day: Bool
-                let start: Date
-                let end: Date
+            public struct Muhurat: Codable, Sendable {
+                public let id: Int
+                public let name: String
+                public let type: MuhuratType
+                public let vela: String?
+                public let is_day: Bool
+                public let start: Date
+                public let end: Date
                 
-                enum MuhuratType: String, Codable {
+                public enum MuhuratType: String, Codable, Sendable {
                     case inauspicious = "Inauspicious"
                     case auspicious = "Most Auspicious"
                     case good = "Good"

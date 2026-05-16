@@ -79,15 +79,16 @@ class Appwrite {
         urlComponents.queryItems = queryItems
         let finalPath = urlComponents.path + "?" + (urlComponents.query ?? "")
         let clock = ContinuousClock()
-        let requestStart = clock.now()
+        let requestStart = clock.now
         let signpostID = signposter.makeSignpostID()
         let signpostState = signposter.beginInterval("Appwrite Function", id: signpostID, "\(finalPath, privacy: .public)")
         logger.debug("Starting Appwrite request path=\(finalPath, privacy: .public)")
 
         do {
             let execution = try await functions.createExecution(functionId: functionID, path: finalPath, method: .gET)
-            let networkDuration = requestStart.duration(to: clock.now())
+            let networkDuration = requestStart.duration(to: clock.now)
             let response = execution.responseBody
+            logger.debug("\(response)")
             if response.isEmpty {
                 throw AppError.emptyResponse
             }
@@ -95,27 +96,27 @@ class Appwrite {
                 throw AppError.emptyResponse
             }
 
-            let decodeStart = clock.now()
+            let decodeStart = clock.now
             let jsonDecoder = JSONDecoder()
             jsonDecoder.dateDecodingStrategy = .iso8601
             let decodedValue = try jsonDecoder.decode(T.self, from: data)
-            let decodeDuration = decodeStart.duration(to: clock.now())
-            let totalDuration = requestStart.duration(to: clock.now())
+            let decodeDuration = decodeStart.duration(to: clock.now)
+            let totalDuration = requestStart.duration(to: clock.now)
 
             logger.info(
                 "Completed Appwrite request path=\(finalPath, privacy: .public) network_ms=\(networkDuration.milliseconds) decode_ms=\(decodeDuration.milliseconds) total_ms=\(totalDuration.milliseconds)"
             )
             signposter.endInterval("Appwrite Function", signpostState, "network_ms=\(networkDuration.milliseconds) total_ms=\(totalDuration.milliseconds)")
-
+            
             return decodedValue
             
         } catch _ as AsyncHTTPClient.HTTPClient.NWPOSIXError {
-            let totalDuration = requestStart.duration(to: clock.now())
+            let totalDuration = requestStart.duration(to: clock.now)
             logger.error("Appwrite request failed path=\(finalPath, privacy: .public) total_ms=\(totalDuration.milliseconds) error=No network")
             signposter.endInterval("Appwrite Function", signpostState, "failed total_ms=\(totalDuration.milliseconds)")
             throw AppError.noNetwork
         } catch {
-            let totalDuration = requestStart.duration(to: clock.now())
+            let totalDuration = requestStart.duration(to: clock.now)
             logger.error("Appwrite request failed path=\(finalPath, privacy: .public) total_ms=\(totalDuration.milliseconds) error=\(error.localizedDescription, privacy: .public)")
             signposter.endInterval("Appwrite Function", signpostState, "failed total_ms=\(totalDuration.milliseconds)")
             throw AppError.general(error: error)
@@ -127,7 +128,7 @@ private extension Duration {
     var milliseconds: Int64 {
         let components = self.components
         let secondsInMilliseconds = Int64(components.seconds) * 1_000
-        let attosecondsPerMillisecond = 1_000_000_000_000_000
+        let attosecondsPerMillisecond: Int64 = 1_000_000_000_000_000
         let attosecondsInMilliseconds = Int64(components.attoseconds / attosecondsPerMillisecond)
         return secondsInMilliseconds + attosecondsInMilliseconds
     }

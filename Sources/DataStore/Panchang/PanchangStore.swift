@@ -5,14 +5,13 @@
 //  Created by Harikant Jammi on 25/03/25.
 //
 import Foundation
-import DataStore
 
-class PanchangStore {
-    let appWrite = Appwrite.shared
-    
-    func getPanchang(selectedCity: CitySelection,
-                     date: Date,
-                     userPreferences: UserPreferences) async throws -> PanchangResponseDTO {
+final public class PanchangStore: Sendable {
+    public init() {}
+    @MainActor
+    public func getPanchang(selectedCity: CitySelection,
+                            date: Date,
+                            userPreferences: UserPreferences = UserPreferences.shared) async throws -> PanchangResponseDTO {
         let tz = selectedCity.tz
         let longitude = selectedCity.longitude
         let latitude = selectedCity.latitude
@@ -24,7 +23,7 @@ class PanchangStore {
             .setDate(date, tz: tz)
             .build()
         
-        return try await appWrite.executeFunction("6788e8bf000f944e2335", path: path, queryItems: queryItems)
+        return try await Appwrite.shared.executeFunction("6788e8bf000f944e2335", path: path, queryItems: queryItems)
         
     }
     

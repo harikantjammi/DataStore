@@ -6,131 +6,135 @@
 //
 
 import Foundation
-import DataStore
 
-class TodayStore {
+@MainActor
+public class TodayStore {
     
-    struct TodayModel {
-        let citySelection: CitySelection
-        let panchang: ExtendedPanchangResponse?
-        let calendarEvents: [CalendarStore.Model.CalendarDayComponents]
-        let sunAndMoonDetails: SunAndMoonDetailsStore.DTO?
+    public init() {}
+    
+    public struct TodayModel {
+        public let citySelection: CitySelection
+        public let panchang: ExtendedPanchangResponse?
+        public let calendarEvents: [CalendarStore.Model.CalendarDayComponents]
+        public let sunAndMoonDetails: SunAndMoonDetailsStore.DTO?
     }
     
-    struct ExtendedPanchangResponse: Codable {
-        let data: ExtendedPanchangModel
+    public struct ExtendedPanchangResponse: Codable, Sendable {
+        public let data: ExtendedPanchangModel
     }
     
-    struct ExtendedPanchangModel: Codable {
-        let panchang: PanchangModel
-        let calendar: CalendarModel?
-        struct PanchangModel: Codable {
-            let data: Data
+    public struct ExtendedPanchangModel: Codable, Sendable {
+        public let panchang: PanchangModel
+        public let calendar: CalendarModel?
+        public struct PanchangModel: Codable, Sendable {
+            public let data: Data
             
-            struct Data: Codable {
-                let vaara: String
-                let nakshatra: [Nakshatra]
-                let tithi: [Tithi]
-                let karana: [Karana]
-                let yoga: [Yoga]
-                let auspicious_period: [Period]
-                let inauspicious_period: [Period]
+            public struct Data: Codable, Sendable {
+                public let vaara: String
+                public let nakshatra: [Nakshatra]
+                public let tithi: [Tithi]
+                public let karana: [Karana]
+                public let yoga: [Yoga]
+                public let auspicious_period: [Period]
+                public let inauspicious_period: [Period]
                 
-                struct Period: Codable {
-                    let id: Int
-                    let name: String
-                    let type: String
-                    let period: [Timing]
+                public struct Period: Codable, Sendable {
+                    public let id: Int
+                    public let name: String
+                    public let type: String
+                    public let period: [Timing]
                     
-                    struct Timing: Codable {
-                        let start: Date
-                        let end: Date
+                    public struct Timing: Codable, Sendable {
+                        public let start: Date
+                        public let end: Date
                     }
                 }
                 
-                struct Yoga: Codable {
-                    let id: Int
-                    let name: String
-                    let start: Date
-                    let end: Date
+                public struct Yoga: Codable, Sendable {
+                    public let id: Int
+                    public let name: String
+                    public let start: Date
+                    public let end: Date
                 }
                 
-                struct Karana: Codable {
-                    let index: Int
-                    let id: Int
-                    let name: String
-                    let start: Date
-                    let end: Date
+                public struct Karana: Codable, Sendable {
+                    public let index: Int
+                    public let id: Int
+                    public let name: String
+                    public let start: Date
+                    public let end: Date
                 }
-                struct Tithi: Codable {
-                    let id: Int
-                    let index: Int
-                    let name: String
-                    let paksha: String
-                    let start: Date
-                    let end: Date
+                public struct Tithi: Codable, Sendable {
+                    public let id: Int
+                    public let index: Int
+                    public let name: String
+                    public let paksha: String
+                    public let start: Date
+                    public let end: Date
                 }
                 
-                struct Nakshatra: Codable {
-                    let id: Int
-                    let name: String
-                    let lord: Lord
-                    let start: Date
-                    let end: Date
+                public struct Nakshatra: Codable, Sendable {
+                    public let id: Int
+                    public let name: String
+                    public let lord: Lord
+                    public let start: Date
+                    public let end: Date
                     
-                    struct Lord: Codable {
-                        let id: Int
-                        let name: String
-                        let vedic_name: String
+                    public struct Lord: Codable, Sendable {
+                        public let id: Int
+                        public let name: String
+                        public let vedic_name: String
                     }
                 }
             }
         }
-        struct CalendarModel: Codable {
-            let data: Data
+        public struct CalendarModel: Codable, Sendable {
+            public let data: Data
             
-            struct Data: Codable {
-                let calendar_date: CalendarDate
-                struct CalendarDate: Codable {
-                    let id: Int
-                    let name: String
-                    let year: Int
-                    let month: Int
-                    let day: Int
-                    let leap: Int
-                    let year_name: String
-                    let month_name: String
+            public struct Data: Codable, Sendable {
+                public let calendar_date: CalendarDate
+                public struct CalendarDate: Codable, Sendable {
+                    public let id: Int
+                    public let name: String
+                    public let year: Int
+                    public let month: Int
+                    public let day: Int
+                    public let leap: Int
+                    public let year_name: String
+                    public let month_name: String
                 }
             }
         }
     }
     
     @MainActor
-    func getData(city: CitySelection,
-                 userPreferences: UserPreferences = UserPreferences(),
+    public func getData(city: CitySelection,
+                        userPreferences: UserPreferences = UserPreferences.shared,
                  date: Date = Date()) async throws -> TodayModel {
         let tz = city.tz
         let name = city.name
         let state = city.state
         let longitude = city.longitude
         let latitude = city.latitude
-        async let astronomyData = try? await fetchAstronomyData(tz: tz,
+        let userPreferences = UserPreferences.shared
+        
+        async let astronomyData = try fetchAstronomyData(tz: tz,
                                                                 name: name,
                                                                 state: state,
                                                                 date: date)
-        async let calendarEvents = try? await fetchCalendarEvents(tz: tz,
+        async let calendarEvents = try fetchCalendarEvents(tz: tz,
                                                                   cityName:
                                                                     name, date: date)
-        async let extendedPanchangData = try? await fetchTodayExtendedPanchangData(tz: tz,
+        async let extendedPanchangData = try fetchTodayExtendedPanchangData(tz: tz,
                                                                                    longitude: longitude,
                                                                                    latitude: latitude,
-                                                                                  userPreferences: UserPreferences(),
+                                                                             userPreferences: userPreferences,
                                                                                    date: date)
-        return await TodayModel(
+        return TodayModel(
             citySelection: city,
-            panchang: extendedPanchangData,
-            calendarEvents: calendarEvents ?? [],
-            sunAndMoonDetails: astronomyData)
+            panchang: try await extendedPanchangData,
+            calendarEvents: try await calendarEvents,
+            sunAndMoonDetails: try await astronomyData)
     }
     
     @MainActor
@@ -143,11 +147,12 @@ class TodayStore {
     }
     
     private func fetchCalendarEvents(tz: String, cityName: String, date: Date) async throws -> [CalendarStore.Model.CalendarDayComponents] {
-        let store = await CalendarStore.shared
+        let store = CalendarStore.shared
         return try await store.getUpcomingCalendar(date: date,
                                                    tz: tz)
     }
     
+    @MainActor
     private func fetchTodayExtendedPanchangData(tz: String,
                                                 longitude: Double,
                                                 latitude: Double,
@@ -168,5 +173,11 @@ class TodayStore {
         return try await appwrite.executeFunction("6788e8bf000f944e2335",
                                                   path: path,
                                                   queryItems: queryItems)
+    }
+}
+
+extension TodayStore.TodayModel {
+    public var containsAllData: Bool {
+        return self.sunAndMoonDetails?.astronomy != nil && !self.calendarEvents.isEmpty && self.panchang != nil
     }
 }

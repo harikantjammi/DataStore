@@ -5,10 +5,9 @@
 //  Created by Harikant Jammi on 25/03/25.
 //
 import Foundation
-import DataStore
 
-class PanchangAPIQueryItemsBuilder {
-    var queryItems: [String: URLQueryItem] = [:]
+public class PanchangAPIQueryItemsBuilder {
+    public var queryItems: [String: URLQueryItem] = [:]
     
     @discardableResult
     func setAyanamsa(_ ayanamsa: Ayanamsa) -> Self {
