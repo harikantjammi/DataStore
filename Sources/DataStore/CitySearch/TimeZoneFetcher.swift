@@ -6,6 +6,7 @@
 //
 
 import CoreLocation
+@MainActor
 public class TimeZoneFetcher {
     public init() {}
     public struct Response: Codable {
@@ -18,6 +19,7 @@ public class TimeZoneFetcher {
         }
     }
     
+    @MainActor
     public func fetchTimeZone(for location: CLLocation) async throws -> String {
         let response: Response = try await Appwrite.shared.executeFunction("6788e8bf000f944e2335",
                                                                            path: "/timezone",
@@ -30,6 +32,7 @@ public class TimeZoneFetcher {
         return response.data.timezone.name
     }
     
+    @MainActor
     public func fetchTimeZone(for city: City) async throws -> String {
         try await fetchTimeZone(for: city.location)
     }

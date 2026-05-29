@@ -6,8 +6,11 @@
 //
 
 import CoreLocation
+@MainActor
 class LocationNormalizer {
     public init() {}
+    
+    @MainActor
     func normalize(_ location: CLLocation) async throws -> CLLocation {
 
         struct Response: Codable {
