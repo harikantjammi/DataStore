@@ -7,7 +7,7 @@
 
 import CoreLocation
 @MainActor
-class LocationNormalizer {
+public class LocationNormalizer {
     public init() {}
     
     @MainActor
