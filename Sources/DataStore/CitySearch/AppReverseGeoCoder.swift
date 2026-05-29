@@ -6,7 +6,7 @@
 //
 
 import CoreLocation
-
+@MainActor
 public class AppReverseGeoCoder {
     public init() {}
     private var geocoder = CLGeocoder()
@@ -16,7 +16,7 @@ public class AppReverseGeoCoder {
     }
     
     
-    
+    @MainActor
     public func reverseGeocode(location: CLLocation) async throws -> CitySearchResult {
         let response: Response = try await Appwrite.shared.executeFunction("6788e8bf000f944e2335",
                                                                            path: "/reversegeocode",
