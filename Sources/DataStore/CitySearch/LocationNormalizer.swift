@@ -11,7 +11,7 @@ public class LocationNormalizer {
     public init() {}
     
     @MainActor
-    func normalize(_ location: CLLocation) async throws -> CLLocation {
+    public func normalize(_ location: CLLocation) async throws -> CLLocation {
 
         struct Response: Codable {
             let latitude: Double
