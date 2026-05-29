@@ -16,12 +16,24 @@ public struct PanchangTimingsListModel {
         public let title: String
         public let rows: [Row]
         
+        public init(title: String, rows: [Row]) {
+            self.title = title
+            self.rows = rows
+        }
+        
         public struct Row: Identifiable, Hashable {
             public let id = UUID()
             public let title: String
             public let value: String
             public let icon: String
             public let iconTint: Color
+            
+            public init(title: String, value: String, icon: String, iconTint: Color) {
+                self.title = title
+                self.value = value
+                self.icon = icon
+                self.iconTint = iconTint
+            }
         }
     }
     
