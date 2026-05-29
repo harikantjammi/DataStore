@@ -10,16 +10,16 @@ import Foundation
 import SwiftData
 
 @MainActor
-class CalendarCollectionStore {
+public class CalendarCollectionStore {
     
     let context: ModelContext
     let appwrite = Appwrite.shared
     
-    init(context: ModelContext) {
+    public init(context: ModelContext) {
         self.context = context
     }
     
-    func refreshCalendar(month: Int, year: Int) async throws {
+    public func refreshCalendar(month: Int, year: Int) async throws {
         guard let storedCalendarEntryCollection = try lookUpCalendarCollection(month: month,
                                                                                year: year) else {
             try await fetchAndUpdateCalendarCollection(month: month, year: year)
@@ -119,7 +119,7 @@ class CalendarCollectionStore {
 
 extension CalendarEntryCollection {
     
-    func isInThresholdRange() -> Bool {
+    public func isInThresholdRange() -> Bool {
         let thresholdTimeInterval: Double = 60*60*24*7
         let now = Date()
         let thresholdDate = lastUpdated.addingTimeInterval(thresholdTimeInterval)
@@ -128,7 +128,7 @@ extension CalendarEntryCollection {
 }
 
 extension CalendarEntry {
-    convenience init(dto: CalendarStore.Response.DTO) {
+    public convenience init(dto: CalendarStore.Response.DTO) {
         self.init(day: dto.day,
                   month: dto.month,
                   year: dto.year,
