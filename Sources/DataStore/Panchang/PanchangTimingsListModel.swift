@@ -144,7 +144,7 @@ extension PanchangTimingsListModel.Section.Row {
     }
 }
 
-enum PanchangVaara: String {
+public enum PanchangVaara: String {
     case monday = "monday"
     case tuesday = "tuesday"
     case wednesday = "wednesday"
@@ -153,7 +153,7 @@ enum PanchangVaara: String {
     case saturday = "saturday"
     case sunday = "sunday"
     
-    var displayValue: String {
+    public var displayValue: String {
         switch self {
             case .monday: "Monday (Somvaar)"
             case .tuesday: "Tuesday (Mangalvaar)"
@@ -167,7 +167,7 @@ enum PanchangVaara: String {
 }
 
 extension PanchangVaara {
-    init?(vaara: String) {
+    public init?(vaara: String) {
         self.init(rawValue: vaara.lowercased())
     }
 }
