@@ -8,9 +8,9 @@
 
 import Foundation
 
-class PlanetPositionRepository {
+public class PlanetPositionRepository {
     @MainActor
-    func getPlanetPositions(tz: String,
+    public func getPlanetPositions(tz: String,
                             latitude: Double,
                             longitude: Double,
                             userPreferences: UserPreferences,

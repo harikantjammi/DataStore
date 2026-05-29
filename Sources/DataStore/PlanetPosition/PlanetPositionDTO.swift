@@ -6,32 +6,32 @@
 //
 import Foundation
 
-struct PlanetPositionDTO: Codable {
-    let data: Data
-    struct Data: Codable {
-        let status: String
-        let data: Data
+public struct PlanetPositionDTO: Codable {
+    public let data: Data
+    public struct Data: Codable {
+        public let status: String
+        public let data: Data
         
-        struct Data: Codable {
-            let planet_position: [PlanetPosition]
+        public struct Data: Codable {
+            public let planet_position: [PlanetPosition]
             
-            struct PlanetPosition: Codable {
-                let id: Int
-                let name: String
-                let longitude: Double
-                let is_retrograde: Bool
-                let position: Int
-                let degree: Double
-                let rasi: Rasi
+            public struct PlanetPosition: Codable {
+                public let id: Int
+                public let name: String
+                public let longitude: Double
+                public let is_retrograde: Bool
+                public let position: Int
+                public let degree: Double
+                public let rasi: Rasi
                 
-                struct Rasi: Codable {
-                    let id: Int
-                    let name: String
-                    let lord: Lord
-                    struct Lord: Codable {
-                        let id: Int
-                        let name: String
-                        let vedic_name: String
+                public struct Rasi: Codable {
+                    public let id: Int
+                    public let name: String
+                    public let lord: Lord
+                    public struct Lord: Codable {
+                        public let id: Int
+                        public let name: String
+                        public let vedic_name: String
                     }
                 }
             }
