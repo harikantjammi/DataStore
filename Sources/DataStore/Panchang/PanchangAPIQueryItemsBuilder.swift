@@ -7,8 +7,10 @@
 import Foundation
 
 public class PanchangAPIQueryItemsBuilder {
-    public var queryItems: [String: URLQueryItem] = [:]
-    
+    private var queryItems: [String: URLQueryItem] = [:]
+    public init() {
+        
+    }
     @discardableResult
     func setAyanamsa(_ ayanamsa: Ayanamsa) -> Self {
         queryItems["ayanamsa"] = URLQueryItem(name: "ayanamsa", value: "\(ayanamsa.rawValue)")
