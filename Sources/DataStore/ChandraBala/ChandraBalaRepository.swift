@@ -9,6 +9,7 @@
 import Foundation
 
 public class ChandraBalaRepository {
+    public init() {}
     @MainActor
     public func fetchChandraBala(tz: String,
                           latitude: Double,
