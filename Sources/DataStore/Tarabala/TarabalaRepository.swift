@@ -45,6 +45,7 @@ public struct TaraBalaDTO: Codable {
 
 
 public class TaraBalaRepository {
+    public init() {}
     @MainActor
     public func fetchTaraBala(tz: String,
                        longitude: Double,
