@@ -7,6 +7,7 @@
 
 import CoreLocation
 class LocationNormalizer {
+    public init() {}
     func normalize(_ location: CLLocation) async throws -> CLLocation {
 
         struct Response: Codable {

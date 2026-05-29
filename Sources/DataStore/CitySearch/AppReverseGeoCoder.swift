@@ -8,6 +8,7 @@
 import CoreLocation
 
 public class AppReverseGeoCoder {
+    public init() {}
     private var geocoder = CLGeocoder()
     
     public struct Response: Codable {

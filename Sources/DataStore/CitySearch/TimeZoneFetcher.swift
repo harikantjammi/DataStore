@@ -6,18 +6,19 @@
 //
 
 import CoreLocation
-class TimeZoneFetcher {
-    struct Response: Codable {
-        let data: Data
-        struct Timezone: Codable {
-            let name: String
+public class TimeZoneFetcher {
+    public init() {}
+    public struct Response: Codable {
+        public let data: Data
+        public struct Timezone: Codable {
+            public let name: String
         }
-        struct Data: Codable {
-            let timezone: Timezone
+        public struct Data: Codable {
+            public let timezone: Timezone
         }
     }
     
-    func fetchTimeZone(for location: CLLocation) async throws -> String {
+    public func fetchTimeZone(for location: CLLocation) async throws -> String {
         let response: Response = try await Appwrite.shared.executeFunction("6788e8bf000f944e2335",
                                                                            path: "/timezone",
                                                                            queryItems: [
@@ -29,7 +30,7 @@ class TimeZoneFetcher {
         return response.data.timezone.name
     }
     
-    func fetchTimeZone(for city: City) async throws -> String {
+    public func fetchTimeZone(for city: City) async throws -> String {
         try await fetchTimeZone(for: city.location)
     }
 }
