@@ -109,7 +109,7 @@ public extension PanchangTimingsListModel.Section.Row {
     }
 }
 
-extension PanchangTimingsListModel.Section.Row {
+public extension PanchangTimingsListModel.Section.Row {
     static func buildValueLabelText(dateInterval: DateInterval, timeZone: String) -> String {
         var onlyTimeFormatStyle = Date.FormatStyle().hour().minute()
         onlyTimeFormatStyle.timeZone = TimeZone(identifier: timeZone)!
