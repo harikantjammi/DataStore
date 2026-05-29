@@ -12,13 +12,13 @@ public class PanchangAPIQueryItemsBuilder {
         
     }
     @discardableResult
-    func setAyanamsa(_ ayanamsa: Ayanamsa) -> Self {
+    public func setAyanamsa(_ ayanamsa: Ayanamsa) -> Self {
         queryItems["ayanamsa"] = URLQueryItem(name: "ayanamsa", value: "\(ayanamsa.rawValue)")
         return self
     }
     
     @discardableResult
-    func setDate(_ date: Date, tz: String) -> Self {
+    public func setDate(_ date: Date, tz: String) -> Self {
         let timezone = TimeZone(identifier: tz)!
         let formatter = ISO8601DateFormatter()
         formatter.timeZone = timezone
@@ -39,14 +39,14 @@ public class PanchangAPIQueryItemsBuilder {
     }
     
     @discardableResult
-    func set(latitude: Double, longitude: Double) -> Self {
+    public func set(latitude: Double, longitude: Double) -> Self {
         let longitudeString = (longitude < 0) ? "%2D\(abs(longitude))" : "\(longitude)"
         queryItems["coordinates"] = URLQueryItem(name: "coordinates", value: "\(latitude)%2C\(longitudeString)")
         return self
     }
     
     @discardableResult
-    func setCalendarDate(date: Date, tz: String) -> Self {
+    public func setCalendarDate(date: Date, tz: String) -> Self {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
         formatter.locale = Locale(identifier: "en_US_POSIX")
@@ -57,13 +57,13 @@ public class PanchangAPIQueryItemsBuilder {
     }
     
     @discardableResult
-    func setCalendarType(_ calendarType: CalendarDateDisplayType) -> Self {
+    public func setCalendarType(_ calendarType: CalendarDateDisplayType) -> Self {
         queryItems["calendar"] = URLQueryItem(name: "calendar",
                                               value: calendarType.rawValue)
         return self
     }
     
-    func build() -> [URLQueryItem] {
+    public func build() -> [URLQueryItem] {
         queryItems["la"] = URLQueryItem(name: "la", value: "en")
         return queryItems.values.sorted { $0.name < $1.name }.compactMap { $0 }
     }
