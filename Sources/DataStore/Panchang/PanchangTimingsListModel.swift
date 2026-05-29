@@ -11,6 +11,10 @@ import Foundation
 public struct PanchangTimingsListModel {
     public let sections: [Section]
     
+    public init(sections: [Section]) {
+        self.sections = sections
+    }
+    
     public struct Section: Identifiable {
         public let id = UUID()
         public let title: String
