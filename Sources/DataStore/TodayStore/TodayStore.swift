@@ -160,7 +160,7 @@ public class TodayStore {
                                                                    longitude: longitude,
                                                                    latitude: latitude,
                                                                    date: date,
-                                                                   userPreferences: userPreferences)
+                                                                   citySelection: city)
         return TodayModel(
             citySelection: city,
             panchang: try await extendedPanchangData,
@@ -211,14 +211,15 @@ public class TodayStore {
                                             longitude: Double,
                                             latitude: Double,
                                             date: Date,
-                                            userPreferences: UserPreferences) async throws -> DayRecommendations {
+                                            citySelection: CitySelection) async throws -> DayRecommendations {
         let appwrite = Appwrite.shared
         let path = "/today-insights"
         let queryItems = TodayInsightsQueryItemsBuilder()
             .setLatitude(latitude)
             .setLongitude(longitude)
             .setDate(date, tz: tz)
-            .setCity(userPreferences.currentCalendar.rawValue)
+            .setCity(citySelection.name)
+            .setState(citySelection.state)
             .setTimezone(tz)
             .build()
         
@@ -282,7 +283,7 @@ class TodayInsightsQueryItemsBuilder {
         
         
         
-        queryItems["date"] = URLQueryItem(name: "datetime",
+        queryItems["date"] = URLQueryItem(name: "date",
                                               value: dateSplitFirstPart + "T" + dateSplitSecondPart)
         return self
     }
