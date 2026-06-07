@@ -156,6 +156,8 @@ public class TodayStore {
                                                                                    latitude: latitude,
                                                                              userPreferences: userPreferences,
                                                                                    date: date)
+        let (astronomy, calendar, panchang) = try await (astronomyData, calendarEvents, extendedPanchangData)
+
         let recommendations = try await fetchTodaysRecommendations(tz: tz,
                                                                    longitude: longitude,
                                                                    latitude: latitude,
@@ -163,9 +165,10 @@ public class TodayStore {
                                                                    citySelection: city)
         return TodayModel(
             citySelection: city,
-            panchang: try await extendedPanchangData,
-            calendarEvents: try await calendarEvents,
-            sunAndMoonDetails: try await astronomyData, dayRecommendations: recommendations)
+            panchang: panchang,
+            calendarEvents: calendar,
+            sunAndMoonDetails: astronomy,
+            dayRecommendations: recommendations)
     }
     
     @MainActor
