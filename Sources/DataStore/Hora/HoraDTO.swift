@@ -7,7 +7,7 @@
 
 import Foundation
 
-nonisolated public struct HoraDTO: Codable, Sendable {
+public struct HoraDTO: Codable, Sendable {
     public let data: Data
     
     public struct Data: Codable, Sendable  {
@@ -35,7 +35,7 @@ nonisolated public struct HoraDTO: Codable, Sendable {
 
 }
 
-nonisolated public extension HoraDTO.Data.Data.HoraTiming {
+public extension HoraDTO.Data.Data.HoraTiming {
     
     var isDay: Bool {
         return is_day

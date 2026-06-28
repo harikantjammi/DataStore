@@ -18,83 +18,69 @@ public class CitySearchListState {
             searchSubject.send(searchText)
         }
     }
-    
+
     public var isLoading: Bool = false
-    
+
     public var cities: [City] = []
     private var cancellable: AnyCancellable?
+    private var searchTask: Task<Void, Never>?
     public let searchSubject = PassthroughSubject<String, Never>()
     let appWriteClient = Appwrite.shared
-    
+
     public init() {
         cancellable = searchSubject
             .debounce(for: 0.5, scheduler: RunLoop.main)
-            .map { [weak self] searchText -> AnyPublisher<[City], Never> in
-                guard let self = self else {
-                    return Just([]).eraseToAnyPublisher()
+            .sink { [weak self] searchText in
+                guard let self else { return }
+                self.searchTask?.cancel()
+                self.searchTask = Task { [weak self] in
+                    await self?.performSearch(searchText)
                 }
-                return self.performSearch(searchText)
             }
-            .switchToLatest()
-            .eraseToAnyPublisher()
-            .assign(to: \.cities, on: self)
-        
     }
-    
+
     public func resetResults() {
         self.cities = []
     }
-    
-    
-    
-    private func performSearch(_ searchText: String) -> AnyPublisher<[City], Never> {
+
+    private func performSearch(_ searchText: String) async {
         self.isLoading = true
         self.cities = []
-        if searchText.isEmpty || self.searchText.count < 3 {
+        if searchText.isEmpty || searchText.count < 3 {
             self.isLoading = false
-            return Just([]).eraseToAnyPublisher()
+            return
         }
-        let publisher: AnyPublisher<CitySearchResponse, Error> = appWriteClient.executeFunctionPublisher("6788e8bf000f944e2335",
-                                                                                                         path: "/cities",
-                                                                                                         queryItems: [URLQueryItem(name: "query",
-                                                                                                                                   value: searchText)])
-        return publisher
-            .map {(value: CitySearchResponse) in value.data }
-            .replaceError(with: [])
-            .map { $0.map {
-                City(id: $0.place_id,
-                     name: $0.address.name ?? "",
-                     country: $0.address.country ?? "",
-                     location: CLLocation(latitude: Double($0.lat)!,
-                                          longitude: Double($0.lon)!),
-                     state: $0.address.state ?? "")
+        defer { self.isLoading = false }
+        do {
+            let response: CitySearchResponse = try await appWriteClient.executeFunction(
+                "6788e8bf000f944e2335",
+                path: "/cities",
+                queryItems: [URLQueryItem(name: "query", value: searchText)])
+            guard !Task.isCancelled else { return }
+            self.cities = response.data.map { result in
+                City(id: result.place_id,
+                     name: result.address.name ?? "",
+                     country: result.address.country ?? "",
+                     location: CLLocation(latitude: Double(result.lat)!,
+                                          longitude: Double(result.lon)!),
+                     state: result.address.state ?? "")
             }
-            }
-            .handleEvents(
-                receiveCompletion: { [weak self] _ in
-                    // Set loading to false when the publisher completes (success or failure)
-                    self?.isLoading = false
-                },
-                receiveCancel: { [weak self] in
-                    // Set loading to false if the subscription is cancelled
-                    self?.isLoading = false
-                    self?.cities = []
-                }
-            )
-            .eraseToAnyPublisher()
+        } catch {
+            self.cities = []
+        }
     }
 }
 
-nonisolated public struct CitySearchResponse: Codable, Sendable {
+public struct CitySearchResponse: Codable {
     public let data: [CitySearchResult]
 }
-nonisolated public struct CitySearchResult: Codable, Sendable {
+public struct CitySearchResult: Codable {
     public let place_id: String
     public let lat: String
     public let lon: String
     public let address: Address
 
-    nonisolated public struct Address: Codable, Sendable {
+    public struct Address: Codable {
         public let name: String?
         public let city: String?
         public let state: String?

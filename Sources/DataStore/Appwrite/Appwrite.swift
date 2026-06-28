@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Combine
 import NIOCore
 import NIO
 import AsyncHTTPClient
@@ -119,36 +118,6 @@ nonisolated final class Appwrite: @unchecked Sendable {
             signposter.endInterval("Appwrite Function", signpostState, "failed total_ms=\(totalDuration.milliseconds)")
             throw AppError.general(error: error)
         }
-    }
-    
-    public func executeFunctionPublisher<T: Codable & Sendable>(_ functionID: String, path: String, queryItems: [URLQueryItem] = []) -> AnyPublisher<T, Error> {
-        let client = self
-        return Deferred {
-            Future { promise in
-                let promiseBox = FuturePromiseBox(promise)
-                Task {
-                    do {
-                        let value: T = try await client.executeFunction(functionID, path: path, queryItems: queryItems)
-                        promiseBox.complete(.success(value))
-                    } catch {
-                        promiseBox.complete(.failure(error))
-                    }
-                }
-            }
-        }
-        .eraseToAnyPublisher()
-    }
-}
-
-nonisolated private final class FuturePromiseBox<Output>: @unchecked Sendable {
-    private let promise: Future<Output, Error>.Promise
-
-    init(_ promise: @escaping Future<Output, Error>.Promise) {
-        self.promise = promise
-    }
-
-    func complete(_ result: Result<Output, Error>) {
-        promise(result)
     }
 }
 
