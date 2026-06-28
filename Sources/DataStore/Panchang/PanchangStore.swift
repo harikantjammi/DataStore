@@ -8,7 +8,6 @@ import Foundation
 
 final public class PanchangStore: Sendable {
     public init() {}
-    @MainActor
     public func getPanchang(selectedCity: CitySelection,
                             date: Date,
                             userPreferences: UserPreferences = UserPreferences.shared) async throws -> PanchangResponseDTO {

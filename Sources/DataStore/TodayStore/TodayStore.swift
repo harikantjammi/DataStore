@@ -7,7 +7,6 @@
 
 import Foundation
 
-@MainActor
 public class TodayStore {
     
     public init() {}
@@ -107,7 +106,6 @@ public class TodayStore {
         }
     }
     
-    @MainActor
     public func getData(city: CitySelection,
                         userPreferences: UserPreferences = UserPreferences.shared,
                  date: Date = Date()) async throws -> TodayModel {
@@ -140,7 +138,6 @@ public class TodayStore {
             sunAndMoonDetails: astronomy)
     }
     
-    @MainActor
     private func fetchAstronomyData(tz: String, name: String, state: String, date: Date) async throws -> SunAndMoonDetailsStore.DTO {
         let store = SunAndMoonDetailsStore()
         return try await store.fetchSunAndMoonDetails(cityTz: tz,
@@ -155,7 +152,6 @@ public class TodayStore {
                                                    tz: tz)
     }
     
-    @MainActor
     private func fetchTodayExtendedPanchangData(tz: String,
                                                 longitude: Double,
                                                 latitude: Double,

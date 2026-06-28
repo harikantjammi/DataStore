@@ -6,7 +6,6 @@
 //
 import Foundation
 
-@MainActor
 public class CalendarStore: Sendable {
     public static let shared = CalendarStore()
     

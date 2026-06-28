@@ -36,11 +36,11 @@ public enum CalendarDateDisplayType: String, CaseIterable {
 }
 
 
-@Observable @MainActor
+@Observable
 public class UserPreferences {
-    
+
     private let userDefaults = UserDefaults(suiteName: "group.pocketpanchang")!
-    @MainActor public static let shared: UserPreferences = .init()
+    public static let shared: UserPreferences = .init()
     enum PreferenceKeys {
         static let selectedCalendar: String = "selectedCalendar"
         static let selectedAyanamsa: String = "selectedAyanamsa"

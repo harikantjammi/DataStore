@@ -39,7 +39,6 @@ public struct AuspiciousYogaDTO: Codable {
 
 public class AuspisciousYogaStore {
     public init() {}
-    @MainActor
     public func fetchAuspisciousYoga(tz: String, latitude: Double, longitude: Double,
                               userPreferences: UserPreferences? = nil,
                               date: Date) async throws -> AuspiciousYogaDTO {

@@ -10,7 +10,6 @@ public class ChoghadiyaRepository {
     
     public init() {}
     
-    @MainActor
     public func fetchChoghadiya(tz: String,
                          latitude: Double,
                          longitude: Double,

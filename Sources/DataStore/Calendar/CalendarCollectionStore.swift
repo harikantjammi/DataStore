@@ -9,7 +9,6 @@
 import Foundation
 import SwiftData
 
-@MainActor
 public class CalendarCollectionStore {
     
     let context: ModelContext

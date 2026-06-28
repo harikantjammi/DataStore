@@ -10,7 +10,6 @@ import Foundation
 
 public class PlanetPositionRepository {
     public init() {}
-    @MainActor
     public func getPlanetPositions(tz: String,
                             latitude: Double,
                             longitude: Double,

@@ -11,7 +11,6 @@ public class TodaysMuhurthamsStore {
     
     public init() {}
     
-    @MainActor
     public func getAllMuhurthams(selectedCity: CitySelection,
                              date: Date,
                                  userPreferences: UserPreferences = UserPreferences.shared) async throws -> [MuhurthamsDTO.Data.Data.Muhurthams] {
@@ -36,7 +35,6 @@ public class TodaysMuhurthamsStore {
     }
     
     
-    @MainActor
     private func getMuhurthams(type: MuhurthamsAPIPath,
                                selectedCity: CitySelection,
                                date: Date,

@@ -13,7 +13,6 @@ public class HoraStore {
         
     }
     
-    @MainActor
     public func getHora(tz: String, latitude: Double, longitude: Double, date: Date) async throws -> HoraDTO {
         let appwrite = Appwrite.shared
         let userPreferences = UserPreferences.shared
@@ -29,7 +28,6 @@ public class HoraStore {
                                                   queryItems: query)
     }
     
-    @MainActor
     public func getHora(citySelection: CitySelection, date: Date = Date()) async throws -> HoraDTO {
         try await getHora(tz: citySelection.tz,
                           latitude: citySelection.latitude,

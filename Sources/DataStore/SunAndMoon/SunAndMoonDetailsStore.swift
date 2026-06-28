@@ -55,7 +55,6 @@ public class SunAndMoonDetailsStore {
     }
     public init() {}
     
-    @MainActor
     public func fetchSunAndMoonDetails(cityTz: String,
                                        cityName: String,
                                        cityState: String,

@@ -9,7 +9,6 @@
 import Foundation
 public class DishaShoolRepository {
     public init() {}
-    @MainActor
     public func getDishaShool(tz: String,
                        longitude: Double,
                        latitude: Double,
