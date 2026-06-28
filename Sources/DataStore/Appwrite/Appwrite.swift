@@ -56,7 +56,7 @@ public enum AppError: Error, CustomNSError, LocalizedError {
 }
 
 
-final class Appwrite: @unchecked Sendable {
+nonisolated final class Appwrite: @unchecked Sendable {
     private let appwriteClient: Client
     private let functions: Functions
     private let logger = Logger(subsystem: "PocketPanchangApp", category: "Appwrite")
@@ -140,7 +140,7 @@ final class Appwrite: @unchecked Sendable {
     }
 }
 
-private final class FuturePromiseBox<Output>: @unchecked Sendable {
+nonisolated private final class FuturePromiseBox<Output>: @unchecked Sendable {
     private let promise: Future<Output, Error>.Promise
 
     init(_ promise: @escaping Future<Output, Error>.Promise) {
@@ -152,7 +152,7 @@ private final class FuturePromiseBox<Output>: @unchecked Sendable {
     }
 }
 
-private extension Duration {
+nonisolated private extension Duration {
     var milliseconds: Int64 {
         let components = self.components
         let secondsInMilliseconds = Int64(components.seconds) * 1_000

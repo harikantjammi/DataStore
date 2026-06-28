@@ -6,7 +6,7 @@
 //
 import Foundation
 
-public struct PanchangResponseDTO: Codable, Sendable {
+nonisolated public struct PanchangResponseDTO: Codable, Sendable {
     public let data: JSONData
     
     public struct JSONData: Codable, Sendable {

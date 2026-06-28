@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct DishaShoolDTO: Codable {
+nonisolated public struct DishaShoolDTO: Codable {
     public let data: Data
     
     public struct Data: Codable {

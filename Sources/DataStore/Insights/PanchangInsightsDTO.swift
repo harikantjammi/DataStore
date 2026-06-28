@@ -6,12 +6,12 @@
 //
 import Foundation
 
-public struct PanchangInsightsResponse: Codable {
+nonisolated public struct PanchangInsightsResponse: Codable {
     public let panchang: PanchangTimings
     public let recommendations: ComponentRecommendations
 }
 
-public struct PanchangTimings: Codable {
+nonisolated public struct PanchangTimings: Codable {
     public let vaara: String
     public let tithi: [TithiTiming]
     public let nakshatra: [NakshatraTiming]
@@ -19,27 +19,27 @@ public struct PanchangTimings: Codable {
     public let karana: [PanchangTiming]
 }
 
-public struct PanchangTiming: Codable {
+nonisolated public struct PanchangTiming: Codable {
     public let name: String
     public let start: Date
     public let end: Date
 }
 
-public struct TithiTiming: Codable {
+nonisolated public struct TithiTiming: Codable {
     public let name: String
     public let paksha: String
     public let start: Date
     public let end: Date
 }
 
-public struct NakshatraTiming: Codable {
+nonisolated public struct NakshatraTiming: Codable {
     public let name: String
     public let lord: NakshatraLord
     public let start: Date
     public let end: Date
 }
 
-public struct NakshatraLord: Codable {
+nonisolated public struct NakshatraLord: Codable {
     public let name: String
     public let vedicName: String
 
@@ -49,7 +49,7 @@ public struct NakshatraLord: Codable {
     }
 }
 
-public struct ComponentRecommendations: Codable {
+nonisolated public struct ComponentRecommendations: Codable {
     public let tithi: PanchangComponent
     public let vaara: PanchangComponent
     public let nakshatra: PanchangComponent
@@ -57,13 +57,13 @@ public struct ComponentRecommendations: Codable {
     public let karana: PanchangComponent
 }
 
-public struct PanchangComponent: Codable {
+nonisolated public struct PanchangComponent: Codable {
     public let information: String
     public let summary: String
     public let recommendations: [PanchangRecommendation]
 }
 
-public struct PanchangRecommendation: Codable {
+nonisolated public struct PanchangRecommendation: Codable {
     public let text: String
     public let type: RecommendationType
 

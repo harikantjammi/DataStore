@@ -85,16 +85,16 @@ public class CitySearchListState {
     }
 }
 
-public struct CitySearchResponse: Codable, Sendable {
+nonisolated public struct CitySearchResponse: Codable, Sendable {
     public let data: [CitySearchResult]
 }
-public struct CitySearchResult: Codable, Sendable {
+nonisolated public struct CitySearchResult: Codable, Sendable {
     public let place_id: String
     public let lat: String
     public let lon: String
     public let address: Address
-    
-    public struct Address: Codable, Sendable {
+
+    nonisolated public struct Address: Codable, Sendable {
         public let name: String?
         public let city: String?
         public let state: String?

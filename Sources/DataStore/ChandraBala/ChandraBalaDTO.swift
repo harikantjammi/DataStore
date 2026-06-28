@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct ChandraBalaDTO: Codable {
+nonisolated public struct ChandraBalaDTO: Codable {
     public let data: Data
     
     public struct Data: Codable {

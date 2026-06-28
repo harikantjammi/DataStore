@@ -3,6 +3,15 @@
 
 import PackageDescription
 
+let approachableConcurrencySettings: [SwiftSetting] = [
+    .defaultIsolation(MainActor.self),
+    .enableUpcomingFeature("DisableOutwardActorInference"),
+    .enableUpcomingFeature("GlobalActorIsolatedTypesUsability"),
+    .enableUpcomingFeature("InferIsolatedConformances"),
+    .enableUpcomingFeature("InferSendableFromCaptures"),
+    .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
+]
+
 let package = Package(
     name: "DataStore",
     platforms: [.iOS(.v18)],
@@ -20,10 +29,12 @@ let package = Package(
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "DataStore",
-            dependencies: [.product(name: "Appwrite", package: "sdk-for-apple")]),
+            dependencies: [.product(name: "Appwrite", package: "sdk-for-apple")],
+            swiftSettings: approachableConcurrencySettings),
         .testTarget(
             name: "DataStoreTests",
-            dependencies: ["DataStore"]
+            dependencies: ["DataStore"],
+            swiftSettings: approachableConcurrencySettings
         ),
     ]
 )

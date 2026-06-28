@@ -6,7 +6,7 @@
 //
 import Foundation
 
-public struct PlanetPositionDTO: Codable {
+nonisolated public struct PlanetPositionDTO: Codable {
     public let data: Data
     public struct Data: Codable {
         public let status: String

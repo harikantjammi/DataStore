@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct ChoghadiyaDTO: Codable, Sendable {
+nonisolated public struct ChoghadiyaDTO: Codable, Sendable {
     public let data: Data
     
     public struct Data: Codable, Sendable {
