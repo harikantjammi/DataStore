@@ -17,7 +17,6 @@ public class TodayStore {
         public let panchang: ExtendedPanchangResponse?
         public let calendarEvents: [CalendarStore.Model.CalendarDayComponents]
         public let sunAndMoonDetails: SunAndMoonDetailsStore.DTO?
-        public let dayRecommendations: DayRecommendations?
     }
     
     public struct ExtendedPanchangResponse: Codable, Sendable {
@@ -158,17 +157,12 @@ public class TodayStore {
                                                                                    date: date)
         let (astronomy, calendar, panchang) = try await (astronomyData, calendarEvents, extendedPanchangData)
 
-        let recommendations = try await fetchTodaysRecommendations(tz: tz,
-                                                                   longitude: longitude,
-                                                                   latitude: latitude,
-                                                                   date: date,
-                                                                   citySelection: city)
+
         return TodayModel(
             citySelection: city,
             panchang: panchang,
             calendarEvents: calendar,
-            sunAndMoonDetails: astronomy,
-            dayRecommendations: recommendations)
+            sunAndMoonDetails: astronomy)
     }
     
     @MainActor
