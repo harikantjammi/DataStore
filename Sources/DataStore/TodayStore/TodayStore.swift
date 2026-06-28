@@ -107,31 +107,6 @@ public class TodayStore {
         }
     }
     
-    public struct DayRecommendations: Codable, Sendable {
-        public let dayRating: DayRating
-        public let recommendations: [Recommendation]
-        
-        public enum DayRating: String, Codable, Sendable {
-            case excellent
-            case good
-            case neutral
-            case bad
-        }
-        
-        public enum RecommendationType: String, Codable, Sendable {
-            case festival
-            case info
-            case `do`
-            case avoid
-            case warning
-        }
-        
-        public struct Recommendation: Codable, Sendable {
-            public let type: RecommendationType
-            public let text: String
-        }
-    }
-    
     @MainActor
     public func getData(city: CitySelection,
                         userPreferences: UserPreferences = UserPreferences.shared,
@@ -202,90 +177,10 @@ public class TodayStore {
                                                   path: path,
                                                   queryItems: queryItems)
     }
-    
-    @MainActor
-    private func fetchTodaysRecommendations(tz: String,
-                                            longitude: Double,
-                                            latitude: Double,
-                                            date: Date,
-                                            citySelection: CitySelection) async throws -> DayRecommendations {
-        let appwrite = Appwrite.shared
-        let path = "/today-insights"
-        let queryItems = TodayInsightsQueryItemsBuilder()
-            .setLatitude(latitude)
-            .setLongitude(longitude)
-            .setDate(date, tz: tz)
-            .setCity(citySelection.name)
-            .setState(citySelection.state)
-            .setTimezone(tz)
-            .build()
-        
-        return try await appwrite.executeFunction("6a0964fa0022397c9c00",
-                                                  path: path, queryItems: queryItems)
-    }
 }
 
 extension TodayStore.TodayModel {
     public var containsAllData: Bool {
         return self.sunAndMoonDetails?.astronomy != nil && !self.calendarEvents.isEmpty && self.panchang != nil
     }
-}
-
-class TodayInsightsQueryItemsBuilder {
-    private var queryItems: [String: URLQueryItem] = [:]
-    
-    @discardableResult
-    func setCity(_ city: String) -> Self {
-        queryItems["city"] = URLQueryItem(name: "city", value: city)
-        return self
-    }
-    
-    @discardableResult
-    func setLatitude(_ latitude: Double) -> Self {
-        queryItems["latitude"] = URLQueryItem(name: "latitude", value: "\(latitude)")
-        return self
-    }
-    
-    @discardableResult
-    func setLongitude(_ longitude: Double) -> Self {
-        queryItems["longitude"] = URLQueryItem(name: "longitude", value: "\(longitude)")
-        return self
-    }
-    
-    @discardableResult
-    func setState(_ state: String) -> Self {
-        queryItems["state"] = URLQueryItem(name: "state", value: state)
-        return self
-    }
-    
-    @discardableResult
-    func setTimezone(_ timezone: String) -> Self {
-        queryItems["tz"] = URLQueryItem(name: "tz", value: timezone)
-        return self
-    }
-    
-    @discardableResult
-    func setDate(_ date: Date, tz: String) -> Self {
-        let timezone = TimeZone(identifier: tz)!
-        let formatter = ISO8601DateFormatter()
-        formatter.timeZone = timezone
-        let dateString = formatter.string(from: date)
-        let dateStringSplitByT = dateString.split(separator: "T")
-        let dateSplitFirstPart = dateStringSplitByT[0]
-            
-        let dateSplitSecondPart = dateStringSplitByT[1]
-            .replacingOccurrences(of: ":", with: "%3A")
-            .replacingOccurrences(of: "+", with: "%2B")
-            .replacingOccurrences(of: "-", with: "%2D")
-        
-        
-        
-        queryItems["date"] = URLQueryItem(name: "date",
-                                              value: dateSplitFirstPart + "T" + dateSplitSecondPart)
-        return self
-    }
-    func build() -> [URLQueryItem] {
-        return Array(queryItems.values)
-    }
-    
 }
