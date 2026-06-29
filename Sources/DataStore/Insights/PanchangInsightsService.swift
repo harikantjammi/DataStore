@@ -20,9 +20,6 @@ public class PanchangInsightsService {
                                                   queryItems: [
                                                     URLQueryItem(name: "longitude", value: "\(citySelection.longitude)"),
                                                     URLQueryItem(name: "latitude", value: "\(citySelection.latitude)"),
-                                                    URLQueryItem(name: "city", value: citySelection.name),
-                                                    URLQueryItem(name: "tz", value: citySelection.tz),
-                                                    URLQueryItem(name: "state", value: citySelection.state),
                                                     URLQueryItem(name: "date", value: dateString)
                                                   ])
     }
