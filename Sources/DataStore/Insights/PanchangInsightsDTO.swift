@@ -58,7 +58,6 @@ public struct ComponentRecommendations: Codable {
 }
 
 public struct PanchangComponent: Codable {
-    public let information: String
     public let summary: String
     public let recommendations: [PanchangRecommendation]
 }
