@@ -58,6 +58,7 @@ public enum AppError: Error, CustomNSError, LocalizedError {
 nonisolated final class Appwrite: @unchecked Sendable {
     private let appwriteClient: Client
     private let functions: Functions
+    private let account: Account
     private let logger = Logger(subsystem: "PocketPanchangApp", category: "Appwrite")
     private let signposter = OSSignposter(subsystem: "PocketPanchangApp", category: "Appwrite")
     
@@ -69,6 +70,30 @@ nonisolated final class Appwrite: @unchecked Sendable {
             .setProject("676ab30f002c611f24ce")
             .setSelfSigned(true)
         self.functions = Functions(appwriteClient)
+        self.account = Account(appwriteClient)
+    }
+    
+    @discardableResult
+    func createPushTarget(token: String, providerId: String? = nil) async throws -> String {
+        do {
+            do {
+                _ = try await account.get()
+            } catch _ as AppwriteError {
+                _ = try await account.createAnonymousSession()
+            }
+
+            let target = try await account.createPushTarget(
+                targetId: ID.unique(),
+                identifier: token,
+                providerId: providerId
+            )
+
+            return target.id
+        } catch _ as AsyncHTTPClient.HTTPClient.NWPOSIXError {
+            throw AppError.noNetwork
+        } catch {
+            throw AppError.general(error: error)
+        }
     }
     
     func executeFunction<T: Codable>(_ functionID: String, path: String, queryItems: [URLQueryItem] = []) async throws -> T {
