@@ -7,7 +7,7 @@
 
 public class UserSession {
     public struct Data {
-        let id: String
+        public let id: String
     }
     let appwrite: Appwrite = Appwrite.shared
     
