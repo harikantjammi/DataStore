@@ -7,8 +7,9 @@ import Foundation
 
 public class PushNotificationTokenStore {
     private let appwrite = Appwrite.shared
+    public init() {}
     
-    struct PushTargetBody: Codable {
+    public struct PushTargetBody: Codable {
         let token: String
     }
     
