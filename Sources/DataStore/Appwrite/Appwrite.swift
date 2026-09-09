@@ -54,6 +54,12 @@ public enum AppError: Error, CustomNSError, LocalizedError {
     }
 }
 
+extension Appwrite {
+    struct SessionModel {
+        let id: String
+    }
+}
+
 
 nonisolated final class Appwrite: @unchecked Sendable {
     private let appwriteClient: Client
@@ -73,15 +79,22 @@ nonisolated final class Appwrite: @unchecked Sendable {
         self.account = Account(appwriteClient)
     }
     
+    func getUserSession() async throws -> SessionModel {
+        do {
+            if let user = try? await account.get().id {
+                return SessionModel(id: user)
+            } else {
+                _ = try await account.createAnonymousSession()
+                return SessionModel(id: try await account.get().id)
+            }
+        } catch {
+            throw AppError.general(error: error)
+        }
+    }
+    
     @discardableResult
     func createPushTarget(token: String, providerId: String? = nil) async throws -> String {
         do {
-            do {
-                _ = try await account.get()
-            } catch _ as AppwriteError {
-                _ = try await account.createAnonymousSession()
-            }
-
             let target = try await account.createPushTarget(
                 targetId: ID.unique(),
                 identifier: token,
@@ -96,20 +109,63 @@ nonisolated final class Appwrite: @unchecked Sendable {
         }
     }
     
+    public func executePOSTFunction<T: Codable, Body: Encodable>(
+        _ functionID: String,
+        path: String,
+        queryItems: [URLQueryItem] = [],
+        body: Body
+    ) async throws -> T {
+        try await performExecution(method: "POST", path: path, queryItems: queryItems) { finalPath in
+            let jsonEncoder = JSONEncoder()
+            jsonEncoder.dateEncodingStrategy = .iso8601
+            let bodyData = try jsonEncoder.encode(body)
+            guard let bodyString = String(data: bodyData, encoding: .utf8) else {
+                throw AppError.emptyResponse
+            }
+            return try await functions.createExecution(
+                functionId: functionID,
+                body: bodyString,
+                path: finalPath,
+                method: .pOST,
+                headers: ["content-type": "application/json"]
+            ).responseBody
+        }
+    }
+
+    public func executeDELETEFunction<T: Codable>(
+        _ functionID: String,
+        path: String,
+        queryItems: [URLQueryItem] = []
+    ) async throws -> T {
+        try await performExecution(method: "DELETE", path: path, queryItems: queryItems) { finalPath in
+            try await functions.createExecution(functionId: functionID, path: finalPath, method: .dELETE).responseBody
+        }
+    }
+
     func executeFunction<T: Codable>(_ functionID: String, path: String, queryItems: [URLQueryItem] = []) async throws -> T {
+        try await performExecution(method: "GET", path: path, queryItems: queryItems) { finalPath in
+            try await functions.createExecution(functionId: functionID, path: finalPath, method: .gET).responseBody
+        }
+    }
+
+    private func performExecution<T: Codable>(
+        method: String,
+        path: String,
+        queryItems: [URLQueryItem],
+        execute: (_ finalPath: String) async throws -> String
+    ) async throws -> T {
         var urlComponents = URLComponents(string: path)!
         urlComponents.queryItems = queryItems
         let finalPath = urlComponents.path + "?" + (urlComponents.query ?? "")
         let clock = ContinuousClock()
         let requestStart = clock.now
         let signpostID = signposter.makeSignpostID()
-        let signpostState = signposter.beginInterval("Appwrite Function", id: signpostID, "\(finalPath, privacy: .public)")
-        logger.debug("Starting Appwrite request path=\(finalPath, privacy: .public)")
+        let signpostState = signposter.beginInterval("Appwrite Function", id: signpostID, "\(method, privacy: .public) \(finalPath, privacy: .public)")
+        logger.debug("Starting Appwrite \(method, privacy: .public) request path=\(finalPath, privacy: .public)")
 
         do {
-            let execution = try await functions.createExecution(functionId: functionID, path: finalPath, method: .gET)
+            let response = try await execute(finalPath)
             let networkDuration = requestStart.duration(to: clock.now)
-            let response = execution.responseBody
             logger.debug("\(response)")
             if response.isEmpty {
                 throw AppError.emptyResponse
@@ -126,20 +182,19 @@ nonisolated final class Appwrite: @unchecked Sendable {
             let totalDuration = requestStart.duration(to: clock.now)
 
             logger.info(
-                "Completed Appwrite request path=\(finalPath, privacy: .public) network_ms=\(networkDuration.milliseconds) decode_ms=\(decodeDuration.milliseconds) total_ms=\(totalDuration.milliseconds)"
+                "Completed Appwrite \(method, privacy: .public) request path=\(finalPath, privacy: .public) network_ms=\(networkDuration.milliseconds) decode_ms=\(decodeDuration.milliseconds) total_ms=\(totalDuration.milliseconds)"
             )
             signposter.endInterval("Appwrite Function", signpostState, "network_ms=\(networkDuration.milliseconds) total_ms=\(totalDuration.milliseconds)")
-            
+
             return decodedValue
-            
         } catch _ as AsyncHTTPClient.HTTPClient.NWPOSIXError {
             let totalDuration = requestStart.duration(to: clock.now)
-            logger.error("Appwrite request failed path=\(finalPath, privacy: .public) total_ms=\(totalDuration.milliseconds) error=No network")
+            logger.error("Appwrite \(method, privacy: .public) request failed path=\(finalPath, privacy: .public) total_ms=\(totalDuration.milliseconds) error=No network")
             signposter.endInterval("Appwrite Function", signpostState, "failed total_ms=\(totalDuration.milliseconds)")
             throw AppError.noNetwork
         } catch {
             let totalDuration = requestStart.duration(to: clock.now)
-            logger.error("Appwrite request failed path=\(finalPath, privacy: .public) total_ms=\(totalDuration.milliseconds) error=\(error.localizedDescription, privacy: .public)")
+            logger.error("Appwrite \(method, privacy: .public) request failed path=\(finalPath, privacy: .public) total_ms=\(totalDuration.milliseconds) error=\(error.localizedDescription, privacy: .public)")
             signposter.endInterval("Appwrite Function", signpostState, "failed total_ms=\(totalDuration.milliseconds)")
             throw AppError.general(error: error)
         }
