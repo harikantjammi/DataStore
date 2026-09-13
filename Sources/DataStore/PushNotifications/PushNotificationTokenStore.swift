@@ -13,7 +13,7 @@ public class PushNotificationTokenStore {
         var functionId: String {
             switch self {
             case .sandbox:    return "6a9cd1000029315abccf"
-            case .production: return "6a9cd1000029315abccf" // TODO: replace with production function id
+            case .production: return "6aa5ecb9000d675aec60" // TODO: replace with production function id
             }
         }
     }
