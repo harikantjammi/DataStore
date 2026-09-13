@@ -5,10 +5,7 @@ import PackageDescription
 
 let approachableConcurrencySettings: [SwiftSetting] = [
     .defaultIsolation(MainActor.self),
-    .enableUpcomingFeature("DisableOutwardActorInference"),
-    .enableUpcomingFeature("GlobalActorIsolatedTypesUsability"),
     .enableUpcomingFeature("InferIsolatedConformances"),
-    .enableUpcomingFeature("InferSendableFromCaptures"),
     .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
 ]
 
