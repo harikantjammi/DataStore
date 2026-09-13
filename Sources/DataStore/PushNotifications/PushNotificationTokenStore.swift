@@ -45,8 +45,8 @@ public class PushNotificationTokenStore {
     }
 
     public struct UserNotificationPreferences: Codable {
-        let general: Bool
-        let festivals: Bool
+        public let general: Bool
+        public let festivals: Bool
     }
 
     public func getUserNotificationPreferences(userId: String) async throws -> UserNotificationPreferences {
