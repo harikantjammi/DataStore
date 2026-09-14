@@ -58,7 +58,7 @@ public class PushNotificationTokenStore {
         return try await appwrite.executeFunction(environment.functionId, path: "/users/\(userId)/notification-preferences")
     }
 
-    public func postUserNotificationPreferences(userId: String, preferences: UserNotificationPreferences) async throws -> [UserNotificationPreferences] {
+    public func postUserNotificationPreferences(userId: String, preferences: [UserNotificationPreferences]) async throws -> [UserNotificationPreferences] {
         return try await appwrite.executePOSTFunction(environment.functionId,
                                                       path: "/users/\(userId)/notification-preferences",
                                                       body: preferences)
